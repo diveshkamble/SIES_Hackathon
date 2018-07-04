@@ -1,0 +1,19 @@
+{
+  "name": "facial",
+  "version": "1.0.0",
+  "description": "facial recog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Divesh Kamble",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "node-base64-image": "^1.0.4",
+    "pug": "^2.0.0-rc.4",
+    "request": "^2.83.0",
+    "socket.io": "^2.0.4"
+  }
+}

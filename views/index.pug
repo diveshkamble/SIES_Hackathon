@@ -1,0 +1,107 @@
+doctype html
+html
+  head
+    title Hackathon Facial Page
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js')
+  script(src='https://www.gstatic.com/firebasejs/4.9.1/firebase.js')
+
+  script(type='text/javascript').
+    //var socket = io.connect('http://localhost:3000',{reconnect:true,'multiplex':false});
+
+    var config = {
+    apiKey: "AIzaSyButa7HyktE_oA-n11shEF1maIXgdcJdCY",
+    authDomain: "iotsmartdoorcam.firebaseapp.com",
+    databaseURL: "https://iotsmartdoorcam.firebaseio.com",
+    projectId: "iotsmartdoorcam",
+    storageBucket: "",
+    messagingSenderId: "751763562601"
+    };
+    firebase.initializeApp(config);
+
+    var upload = function(){
+    var img = document.getElementById("inputGroupFile01").files;
+    var textf = document.getElementById("subjectid");
+    console.log(textf.value);
+    if (img.length>0) {
+    var imgfile = img[0];
+    var filereader = new FileReader();
+    filereader.onload = function(fileLoadedEvent){
+    var srcData =   fileLoadedEvent.target.result;
+    var justthestringpart = srcData.split(',')[1];
+    console.log(JSON.stringify(srcData));
+    //srcData.replace(/^data:image\\/(png|jpg);base64,/,"");
+    console.log("sending image");
+    var objimg = {"img2base64":srcData, "subjectid" : textf.value};
+    console.log(objimg);
+
+    //socket.emit('base64img',srcData);
+    $.ajax({
+    url: 'http://localhost:3000/train',
+    type: 'POST',
+    data: JSON.stringify(objimg),
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(data){
+    console.log("successful");
+    console.log(data);
+    ref.putString(justthestringpart, 'base64').then(function(snapshot) {
+    console.log('Uploaded a base64 string!');
+    });
+
+    },
+    error: function(error){
+    console.log(error);
+    }
+    });
+    }
+    filereader.readAsDataURL(imgfile);
+    }
+    //var imagedata = img.files[0];
+    //console.log(imagedata.name);
+    //console.log(imagedata.size);
+    return false;
+    } ;
+  body
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
+      a.navbar-brand(href='SmartDoorbell') Smart Doorbell
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExampleDefault', aria-controls='navbarsExampleDefault', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarsExampleDefault.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item
+            a.nav-link(href='index.html') Home
+          li.nav-item
+            a.nav-link.active(href='adduser.html') Add User
+          li.nav-item.dropdown
+            a#dropdown01.nav-link.dropdown-toggle(href='http://example.com', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Dropdown
+            .dropdown-menu(aria-labelledby='dropdown01')
+              a.dropdown-item(href='#') Action
+              a.dropdown-item(href='#') Another action
+              a.dropdown-item(href='#') Something else here
+    main.container(role='main')
+      br
+      br
+      .starter-template
+        br
+        br
+        #image_input
+          h1 Add user image to train
+          form(onsubmit='return upload();', action='/', method='POST', enctype='multipart/form-data')
+            .input-group.mb-3
+              .input-group-prepend
+                span.input-group-text Upload
+              .custom-file
+                input#inputGroupFile01.custom-file-input(type='file', data-cloudinary-field='image_id', name='file', data-form-data='')
+                label.custom-file-label(for='inputGroupFile01')
+            .input-group.mb-3
+              .input-group-prepend
+                span#inputGroup-sizing-default.input-group-text Subject Id
+              input#subjectid.form-control(type='text', name='subject_id', aria-label='Default', aria-describedby='inputGroup-sizing-default')
+            button#image_submit.btn.btn-primary(type='submit', name='submit') submit
+        #image_view
+          h1 Uploaded images
+        hr
