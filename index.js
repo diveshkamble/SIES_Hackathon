@@ -8,10 +8,10 @@ var bodyparser = require('body-parser');
 var path = require('path');
 var base64 = require('node-base64-image');
 
-//var sauravC = 'saurav.png';
-//var finalImage = new Buffer(sauravC).toString('base64');
+//var sauravC = 'test.png';
+//var finalImage = new Buffer(test).toString('base64');
 //console.log(finalImage);
-var sauravq = fs.readFileSync('saurav9.jpg','base64');
+var sauravq = fs.readFileSync('test.jpg','base64');
 //io.set('origins', 'http://localhost:3000');
 app.use(bodyparser.json());
 app.set('view engine', 'pug');
@@ -59,11 +59,11 @@ request({
 	url: ' https://api.kairos.com/enroll',
 	headers: {
 		'Content-Type': 'application/json',
-		'app_id' : 'a7fe32f7',
-		'app_key' : '57d01d777903e22546297da605141f30'
+		'app_id' : '',
+		'app_key' : ''
 	},
 	body : JSON.stringify(reqbody) 
-	//"{ \"image\" : \"sauravC\", \"subject_id\" : \"Saurav Ingawale\", \"gallery_name\": \"HackathonTeam\"}"
+	//"{ \"image\" : \"test\", \"subject_id\" : \"Saurav Ingawale\", \"gallery_name\": \"HackathonTeam\"}"
 }, function(err, res, body){
  console.log('Status:', res.statusCode); 
   console.log('Response:', body);
